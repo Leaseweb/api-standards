@@ -1,13 +1,19 @@
 # LeaseWeb API Design Standards
 
+- [Foundation](#Foundation)
+  - [Require TLS](#require-tls)
+  - [Versioning](#versioning)
+  - [Trace requests with Correlation-Ids(#trace-requests-with-correlation-ids)
+
 This guide describes a set of API Design standards used at [LeaseWeb](www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
 and resource models described below.
 
 In case you need to defer from these standards or if conflicts are found, please contact the Developer Platform.
 
+
 ##Foundation
-***
+
 ### Require TLS
 
 Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
