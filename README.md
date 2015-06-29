@@ -1,9 +1,26 @@
 # LeaseWeb API Design Standards
 
-+ [Foundation](#Foundation)
++ [Foundation](#foundation)
   - [Require TLS](#require-tls)
   - [Versioning](#versioning)
-  - [Trace requests with Correlation-Ids](#correlation)
+  - [Trace requests with Correlation-Ids](#trace-requests-with-correlation-ids)
++ [Requests and responses](#requests-and-responses)
+  - [HTTP Status codes](#http-status-codes)
+  - [Provide full resources](#provide-full-resources)
+  - [Error messages](#error-messages)
+  - [Form validation](#form-validation)
++ [Resources](#resources)
+  - Plural nouns(#plural-nouns)
+  - Use CRUD(#use-crud)
+  - Non-CRUD operations](#non-crud-operations)
+  - Leave complexity behind the query string(#leave-complexity-behind-the-query-string)
+  - Responses that don't involve a resource(#responses-that-don-t-involve-a-resource)
++ [Pagination and partial Responses](#pagination-and-partial-responses)
+  - [Use offset and limit](#use-offset-and-limit-)
+  - [Attach metadata](#attach-metadata)
+  - [Use defaults](#use-defaults)
+  - [Partial Responses/Filter](#partial-responses-filter)
++ [Search](#search)
 
 This guide describes a set of API Design standards used at [LeaseWeb](www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
@@ -12,9 +29,9 @@ and resource models described below.
 In case you need to defer from these standards or if conflicts are found, please contact the Developer Platform.
 
 
-##Foundation <a id="foundation"></a>
+##Foundation
 
-### Require TLS <a id="require-tls"></a>
+### Require TLS
 
 Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
 requests by not responding to requests for http or port 80 to avoid any insecure data 
@@ -25,7 +42,7 @@ Redirects are discouraged since they allow sloppy/bad client behavior without pr
 any clear gain. Clients that rely on redirects double up on server traffic and render TLS 
 useless since sensitive data will already have been exposed during the first call.
 
-### Versioning <a id="versioning"></a>
+### Versioning
 
 APIs are subject to version control. Versioning your API is important as it helps developers 
 and existing clients to slowly transition from a version two another with enough time to plan 
@@ -44,7 +61,7 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 
 `/v1/bareMetals`
 
-### Trace requests with Correlation-Ids <a id="correlation"></a>
+### Trace requests with Correlation-Ids
 
 Each API response through the API Gateway will include a `X-LSW-CORRELATION-ID` header 
 populated with a UUID value. Both the server and client can log these values, which will be helpful 
@@ -134,6 +151,40 @@ HTTP Status: 400 Bad Request
 
 ## Resources
  
+### Plural nouns
+Use the plural nounce for collection resource names. It makes it easy and predictable for developers writing an API using consistent names and distinguishes 
+between collections and singletons.
+
+### Use CRUD
+Use the standard HTTP verbs `GET`,`POST`,`PUT` and `DELETE` to operate on collections or singeltons.
+
+| Verb | Usage | Idempotent | |
+| ---  | ---   | ---        |	---	 |
+| GET   | Read  | X          | Reads a collection or singleton	|
+| POST  | Create|            | Creates a singleton |
+| PUT   | Update| X           | Updates a collection (bulk) or a singleton. Partial updates are allowed |
+| DELETE| Delete|            | Deletes a complete collection or a singleton |
+
+### Non-CRUD operations
+
+
+### Leave complexity behind the query string
+If you need to filter a specific resource, make use of the query string.
+
+#### Example Request
+`GET /v1/bareMetalServers?location=ams-01&state=running`
+
+### Responses that don't involve a resource
+When performing actions like:
++ Calculate
++ Translate
++ Convert
+you are not operating on a resource, therefore the best would be to use a verb and not a noun for your endpoint.
+
+#### Example Request
+`GET /convert?from=EUR&to=USD&amount=100`
+
+Make it clear in your API documentation that these *non-resource* scenarios are different.
 
 
 ## Pagination and partial Responses
