@@ -50,7 +50,7 @@ If you make subsequent calls to other APIs due to an API request, it is advised 
 API call from start to end throughout our application landscape.
 
 When the API Gateway isn’t receiving a `X-LSW-CORRELATION-ID` it will add the header to the call.
-
+ 
 
 
 ## Requests and responses
@@ -123,18 +123,18 @@ HTTP Status: 400 Bad Request
         "country" : ["Country cannot be empty"]
     }
 }
-
-
+```
+ 
 
 ## Resources
-
+ 
 
 
 ## Pagination and partial Responses
-
+ 
 
 
 ## Search
-
+ 
 
 
