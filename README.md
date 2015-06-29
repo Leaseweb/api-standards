@@ -1,0 +1,1 @@
+# LeaseWeb API Design Standards
