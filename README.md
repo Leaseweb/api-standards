@@ -52,6 +52,7 @@ API call from start to end throughout our application landscape.
 When the API Gateway isn’t receiving a `X-LSW-CORRELATION-ID` it will add the header to the call.
 
 
+
 ## Requests and responses
 
 ### HTTP Status codes
@@ -72,25 +73,65 @@ Use the following HTTP status codes for errors:
 * `500 Internal Server Error`: Request failed on server side, user should check status site or report the issue (preferably we track 500 errors and get notified automatically)
 * `503 Service Unavailable`: API is unavailable, check status site for details
 
+
 ### Provide full resources
 
 Provide the full resource representation in the response. Always provide the full resource on `200` and `201` responses, except 
 for `DELETE` requests.
 
-In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has 
+In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource 
+representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has 
 finished and the resource is created.
 
 *NOTE: see the examples for single resources and collections. In a single resource there is no need for a root-identifier.*
 
+
 ### Error messages
+Always provide an error code in your responses, so that applications can always understand what is specifically wrong. 
+Additionally, provide 2 different error messages: one very technical for developers and one that may be directly shown to an 
+end user. Developers will like this approach since it requires less code handling for them.
+
+Optionally add a link to a page for further explanation on the error.
+
+#### Example Response
+```json
+HTTP Status: 500 Internal Server Error
+
+{
+    "errorCode"    : "APP00800",
+    "errorMessage" : "The connection with the DB cannot be established.",
+    "userMessage"  : "Cannot handle your request at the moment. Please try again later.",
+    "reference"    : "http://developer.leaseweb.com/errors/APP00800"
+}
+```
 
 ### Form validation
+You may need to return several error messages when dealing with form data. In this case use additional response field “errorDetails” 
+with explicit information about all errors.
+
+#### Example Response
+```json
+HTTP Status: 400 Bad Request
+
+{
+    "errorCode"      : "APP00900",
+    "errorMessage" : "Validation failed.", 
+    "userMessage"  : "Your data contain errors, please check details.",
+    "reference"       : "http://developer.leaseweb.com/errors/APP00900",
+    “errorDetails”    : {
+        "firstName"    : ["Name cannot be empty", "Name must be unique"],
+        "country" : ["Country cannot be empty"]
+    }
+}
+
 
 
 ## Resources
 
 
+
 ## Pagination and partial Responses
+
 
 
 ## Search
