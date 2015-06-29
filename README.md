@@ -7,7 +7,7 @@ and resource models described below.
 In case you need to defer from these standards or if conflicts are found, please contact the Developer Platform.
 
 ##Foundation
-
+---
 ### Require TLS
 
 Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
