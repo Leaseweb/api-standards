@@ -131,10 +131,66 @@ HTTP Status: 400 Bad Request
 
 
 ## Pagination and partial Responses
- 
+Pagination is an essential part of any API exposing a collection of results.
+Developers must always be aware that a response has more results than requested and 
+should have an easy way to request those additional resources.
+
+Moreover, simple calls that require only partial data, like for instance just a property of an 
+object instead of the whole attributes list, must be accommodated easily. For this reason, 
+clients may just pass a list of the fields they really require, keeping your API results concise 
+and fast.
+
+### Use `offset` and `limit`
+Use `offset` and `limit` to request a range for a response. It is very common and not misleading. 
+
+#### Example Request
+`GET /v1/domains?limit=25&offset=50`
+
+This request will return a collection of 25 domains starting from the 50th.
+
+### Attach metadata
+Always inform the developer that the response is paginated with a metadata attribute in your response, 
+specifying the total number of items in the collection, the limit and the offset.
+
+#### Example Response
+```json
+{ 
+	"domains": [
+		{ "id": "leaseweb.com" },
+		{ "id": "leaseweb.net" }
+	],
+	"_metadata": {
+		"totalCount": 132,
+		"limit": 2,
+		"offset: 0
+	}
+}
+```
+
+### Use defaults
+By rule of thumb, you may define a default limit of 25 and offset of 0. Of course, if your application serves large amount of data per request, 
+you may reduce the default limit and vice versa.
+
+### Partial Responses/Filter
+Sometimes you don't need an entire object, you just need a part of it. Use filters to specify which fields need to be returned.
+
+#### Example Request
+`GET /v1/domains?fields=id,name`
+
+This request will return a collection of domains containing only the resource id and name.
+
 
 
 ## Search
  
+### Scoped Search
+When the search scope is narrower and on a specific resource, you can use the “q” parameter to provide the search query.
+
+#### Example Request
+`GET /v1/domains/leaseweb.com/dnsRecords?q=amsterdam`
+
+This will list all dnsRecords within the domain resource identified by `leaseweb.com` that contains the text `amsterdam`.
+
+*Note: search is not filtering*
 
 
