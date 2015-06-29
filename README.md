@@ -1,9 +1,9 @@
 # LeaseWeb API Design Standards
 
 - [Foundation](#Foundation)
-  - [Require TLS](#require-tls)
-  - [Versioning](#versioning)
-  - [Trace requests with Correlation-Ids(#trace-requests-with-correlation-ids)
+ - [Require TLS](#require-tls)
+ - [Versioning](#versioning)
+ - [Trace requests with Correlation-Ids](#correlation)
 
 This guide describes a set of API Design standards used at [LeaseWeb](www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
@@ -12,9 +12,9 @@ and resource models described below.
 In case you need to defer from these standards or if conflicts are found, please contact the Developer Platform.
 
 
-##Foundation
+##Foundation <a id="#foundation"></a>
 
-### Require TLS
+### Require TLS <a id="#require-tls"></a>
 
 Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
 requests by not responding to requests for http or port 80 to avoid any insecure data 
@@ -25,7 +25,7 @@ Redirects are discouraged since they allow sloppy/bad client behavior without pr
 any clear gain. Clients that rely on redirects double up on server traffic and render TLS 
 useless since sensitive data will already have been exposed during the first call.
 
-### Versioning
+### Versioning <a id="#versioning"></a>
 
 APIs are subject to version control. Versioning your API is important as it helps developers 
 and existing clients to slowly transition from a version two another with enough time to plan 
@@ -44,7 +44,7 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 
 `/v1/bareMetals`
 
-### Trace requests with Correlation-Ids
+### Trace requests with Correlation-Ids <a id="#correlation"></a>
 
 Each API response through the API Gateway will include a `X-LSW-CORRELATION-ID` header 
 populated with a UUID value. Both the server and client can log these values, which will be helpful 
