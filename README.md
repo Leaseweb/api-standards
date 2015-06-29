@@ -38,11 +38,60 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 
 `/v1/bareMetals`
 
+### Trace requests with Correlation-Ids
+
+Each API response through the API Gateway will include a `X-LSW-CORRELATION-ID` header 
+populated with a UUID value. Both the server and client can log these values, which will be helpful 
+for tracing and debugging requests.
+
+
+If you make subsequent calls to other APIs due to an API request, it is advised to add the 
+`X-LSW-CORRELATION-ID` header to your subsequent call. This way it is possible to trace an 
+API call from start to end throughout our application landscape.
+
+When the API Gateway isn’t receiving a `X-LSW-CORRELATION-ID` it will add the header to the call.
+
+
 ## Requests and responses
+
+### HTTP Status codes
+
+Successful responses should be coded according to this guide:
+
+* `200 OK`: Request succeeded for a `GET` call, for `PUT` or `DELETE` call that completed synchronously
+* `201 Created`: Request succeeded for a `POST` call that completed synchronously
+* `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously 
+
+Use the following HTTP status codes for errors:
+
+* `400 Bad Request`: Request failed because client submitted invalid data and needs to check his data before submitting again 
+* `401 Unauthorized`: Request failed because user is not authenticated
+* `403 Forbidden`: Request failed because user does not have authorization to access the resource
+* `404 Not Found`: Request failed because the resource does not exists
+* `405 Method Not Allowed`: Request failed because the requested method is not allowed
+* `500 Internal Server Error`: Request failed on server side, user should check status site or report the issue (preferably we track 500 errors and get notified automatically)
+* `503 Service Unavailable`: API is unavailable, check status site for details
+
+### Provide full resources
+
+Provide the full resource representation in the response. Always provide the full resource on `200` and `201` responses, except 
+for `DELETE` requests.
+
+In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has 
+finished and the resource is created.
+
+*NOTE: see the examples for single resources and collections. In a single resource there is no need for a root-identifier.*
+
+### Error messages
+
+### Form validation
+
 
 ## Resources
 
+
 ## Pagination and partial Responses
+
 
 ## Search
 
