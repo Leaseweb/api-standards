@@ -141,7 +141,7 @@ HTTP Status: 400 Bad Request
     "errorMessage" : "Validation failed.", 
     "userMessage"  : "Your data contain errors, please check details.",
     "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-    “errorDetails”    : {
+    "errorDetails"    : {
         "firstName"    : ["Name cannot be empty", "Name must be unique"],
         "country" : ["Country cannot be empty"]
     }
