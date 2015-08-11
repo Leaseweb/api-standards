@@ -69,10 +69,10 @@ for tracing and debugging requests.
 
 
 If you make subsequent calls to other APIs due to an API request, it is advised to add the 
-`X-LSW-CORRELATION-ID` header to your subsequent call. This way it is possible to trace an 
+`APIGW-CORRELATION-ID` header to your subsequent call. This way it is possible to trace an 
 API call from start to end throughout our application landscape.
 
-When the API Gateway isn’t receiving a `X-LSW-CORRELATION-ID` it will add the header to the call.
+When the API Gateway isn’t receiving a `APIGW-CORRELATION-ID` it will add the header to the call.
  
 
 
