@@ -94,7 +94,7 @@ Use the following HTTP status codes for errors:
 * `400 Bad Request`: Request failed because client submitted invalid data and needs to check his data before submitting again 
 * `401 Unauthorized`: Request failed because user is not authenticated
 * `403 Forbidden`: Request failed because user does not have authorization to access the resource
-* `404 Not Found`: Request failed because the resource does not exists
+* `404 Not Found`: Request failed because the resource does not exists (e.g. for a `GET`, `PUT` or `DELETE` call)
 * `405 Method Not Allowed`: Request failed because the requested method is not allowed
 * `500 Internal Server Error`: Request failed on server side, user should check status site or report the issue (preferably we track 500 errors and get notified automatically)
 * `503 Service Unavailable`: API is unavailable, check status site for details
