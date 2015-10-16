@@ -85,6 +85,7 @@ Successful responses should be coded according to this guide:
 * `200 OK`: Request succeeded for a `GET` call, for `PUT` or `DELETE` call that completed synchronously
 * `201 Created`: Request succeeded for a `POST` call that completed synchronously
 * `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously 
+* `204 No Content`: Request successfully processed a `DELETE` call, but is not returning any content 
 
 Use the following HTTP status codes for errors:
 
