@@ -277,8 +277,6 @@ It is possible to combine expressions to get items. The following request will r
 
 You can also use `$or` (either of the conditions)  and `$nor` (neither of the conditions)  operators.
 
-### Sorting
-
 ## Search
  
 ### Scoped Search
