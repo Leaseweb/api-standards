@@ -253,13 +253,13 @@ The following request will return a collection of domains where the domainName e
 
 or 
 
-`GET /v1/domains?filter={ "domainName" : { "$eq" : "leaseweb.com" } }
+`GET /v1/domains?filter={ "domainName" : { "$eq" : "leaseweb.com" } }`
 
 #### Not equals
 
 The following request will return a colletion of domains where the domainName is not equal to "leaseweb.com":
 
-`GET /v1/domains?filter={ "domainName" : { "$ne" : "leaseweb.com" } }
+`GET /v1/domains?filter={ "domainName" : { "$ne" : "leaseweb.com" } }`
 
 #### Comparison
 
