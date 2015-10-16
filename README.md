@@ -63,7 +63,7 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 
 ### Trace requests with Correlation-Ids
 
-Each API response through the API Gateway will include a `X-LSW-CORRELATION-ID` header 
+Each API response through the API Gateway will include a `APIGW-CORRELATION-ID` header 
 populated with a UUID value. Both the server and client can log these values, which will be helpful 
 for tracing and debugging requests.
 
