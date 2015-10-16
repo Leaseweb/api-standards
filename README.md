@@ -15,11 +15,13 @@
   - [Non-CRUD operations](#non-crud-operations)
   - [Leave complexity behind the query string](#leave-complexity-behind-the-query-string)
   - [Responses that don't involve a resource](#responses-that-don-t-involve-a-resource)
-+ [Pagination and partial Responses](#pagination-and-partial-responses)
-  - [Use offset and limit](#use-offset-and-limit-)
++ [Pagination](#pagination)
+  - [Use offset and limit](#use-offset-and-limit)
   - [Attach metadata](#attach-metadata)
   - [Use defaults](#use-defaults)
-  - [Partial Responses/Filter](#partial-responses-filter)
++ [Partial Responses and Filters](#partial-responses-and-filters)
+  - [Subsets of Fields](#subsets-of-fields)
+  - [Filtering](#filtering)
 + [Search](#search)
 
 This guide describes a set of API Design standards used at [LeaseWeb](www.leaseweb.com).
@@ -228,15 +230,54 @@ specifying the total number of items in the collection, the limit and the offset
 By rule of thumb, you may define a default limit of 25 and offset of 0. Of course, if your application serves large amount of data per request, 
 you may reduce the default limit and vice versa.
 
-### Partial Responses/Filter
-Sometimes you don't need an entire object, you just need a part of it. Use filters to specify which fields need to be returned.
+## Partial Responses and Filters
+
+### Subsets of fields
+Sometimes you don't need an entire object, you just need a part of it. You can choose which fields to return by specifying a `fields` query parameter.
 
 #### Example Request
 `GET /v1/domains?fields=id,name`
 
 This request will return a collection of domains containing only the resource id and name.
 
+### Filtering
 
+You can use a filtering expression to retrieve specific items. Add a `filter` field to querystring with the expression you need.
+We support the follwing expressions:
+
+#### Equals
+
+The following request will return a collection of domains where the domainName equals "leaseweb.com":
+
+`GET /v1/domains?filter={ "domainName" : "leaseweb.com" }`
+
+or 
+
+`GET /v1/domains?filter={ "domainName" : { "$eq" : "leaseweb.com" } }
+
+#### Not equals
+
+The following request will return a colletion of domains where the domainName is not equal to "leaseweb.com":
+
+`GET /v1/domains?filter={ "domainName" : { "$ne" : "leaseweb.com" } }
+
+#### Comparison
+
+The following request will return a collection of bareMetalServers which have a `id` value greater than 23:
+
+`GET /v1/bareMetalServers?filter={ "id" : { "$gt" : 23 } }`
+
+You can also use `$lt` (less-than), `$gte` (greater-than-or-equal-to)  and `$lte` (less-than-or-equal-to) comparisons.
+
+#### Boolean expressions
+
+It is possible to combine expressions to get items. The following request will return a collection of bareMetalServers which have an `id` greater than 23 and `reference` equals "TEST":
+
+`GET /v1/bareMetalServers?filter={ "$and": [{ "id" : { "$gt" : 23 } }, { "reference" : "TEST"} ] }`
+
+You can also use `$or` (either of the conditions)  and `$nor` (neither of the conditions)  operators.
+
+### Sorting
 
 ## Search
  
