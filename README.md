@@ -222,7 +222,7 @@ specifying the total number of items in the collection, the limit and the offset
 	"_metadata": {
 		"totalCount": 132,
 		"limit": 2,
-		"offset: 0
+		"offset": 0
 	}
 }
 ```
