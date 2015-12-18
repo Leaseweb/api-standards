@@ -166,9 +166,8 @@ Use the standard HTTP verbs `GET`,`POST`,`PUT` and `DELETE` to operate on collec
 | GET   | Read  | X         | Reads a collection or singleton	|
 | POST  | Create|           | Creates a singleton |
 | PUT   | Update| X         | Updates a collection (bulk) or a singleton. Partial updates are allowed |
-| DELETE| Delete| X<sup>1</sup>   | Deletes a complete collection or a singleton |
+| DELETE| Delete| X         | Deletes a complete collection or a singleton |
 
-<sup>1</sup> Delete may return 200 or 404 status code to indicate success or failure.
 
 ### Non-CRUD operations
 
