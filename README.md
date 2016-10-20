@@ -170,7 +170,7 @@ with explicit information about all errors.
             "5": {
               "firstName"    : ["Name cannot be empty", "Name must be unique"]
             },
-            ...and so on...
+            //...and so on...
         }
     }
     ```
@@ -193,8 +193,8 @@ with explicit information about all errors.
             "domain": {
               "domainName"    : ["Name must be unique"]
             },
-            ...and so on...
-        ]
+            //...and so on...
+        }
     }
     ```
 
