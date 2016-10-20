@@ -153,21 +153,21 @@ with explicit information about all errors.
     ```
 
 * In case the data submitted consists in a collection of items of same type (multiple users), the error details can be also an array as shown below:
-    ##### Example response for multiple items of the same type
+    ##### Example response for multiple items of the same type where 2nd and 5th element contain a validation error
     ```json
-    HTTP Status: 400 Bad Request
-    
+    HTTP Status: 400 Bad Request  
+   
     {
         "errorCode"      : "APP00900",
         "errorMessage" : "Validation failed.", 
         "userMessage"  : "Your data contain errors, please check details.",
         "reference"       : "http://developer.leaseweb.com/errors/APP00900",
         "errorDetails"    : [
-            {
+            "2": {
               "firstName"    : ["Name must be unique"],
               "country" : ["Country cannot be empty"]
             },
-            {
+            "5": {
               "firstName"    : ["Name cannot be empty", "Name must be unique"]
             },
             ...and so on...
