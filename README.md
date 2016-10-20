@@ -162,7 +162,7 @@ with explicit information about all errors.
         "errorMessage" : "Validation failed.", 
         "userMessage"  : "Your data contain errors, please check details.",
         "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-        "errorDetails"    : [
+        "errorDetails"    : {
             "2": {
               "firstName"    : ["Name must be unique"],
               "country" : ["Country cannot be empty"]
@@ -171,7 +171,7 @@ with explicit information about all errors.
               "firstName"    : ["Name cannot be empty", "Name must be unique"]
             },
             ...and so on...
-        ]
+        }
     }
     ```
 
