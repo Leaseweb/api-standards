@@ -135,22 +135,83 @@ HTTP Status: 500 Internal Server Error
 You may need to return several error messages when dealing with form data. In this case use additional response field “errorDetails” 
 with explicit information about all errors.
 
-#### Example Response
-```json
-HTTP Status: 400 Bad Request
-
-{
-    "errorCode"      : "APP00900",
-    "errorMessage" : "Validation failed.", 
-    "userMessage"  : "Your data contain errors, please check details.",
-    "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-    "errorDetails"    : {
-        "firstName"    : ["Name cannot be empty", "Name must be unique"],
-        "country" : ["Country cannot be empty"]
+* In case the data submitted consists in a single object (eg: user), the response can look as described below:
+    ##### Example response for single object
+    ```json
+    HTTP Status: 400 Bad Request
+    
+    {
+        "errorCode"      : "APP00900",
+        "errorMessage" : "Validation failed.", 
+        "userMessage"  : "Your data contain errors, please check details.",
+        "reference"       : "http://developer.leaseweb.com/errors/APP00900",
+        "errorDetails"    : {
+            "firstName"    : ["Name cannot be empty", "Name must be unique"],
+            "country" : ["Country cannot be empty"]
+        }
     }
-}
-```
- 
+    ```
+
+* In case the data submitted consists in a collection of items of same type (multiple users), the error details can be also an array as shown below:
+    ##### Example response for multiple items of the same type where 2nd and 5th element contain a validation error
+    ```json
+    HTTP Status: 400 Bad Request  
+   
+    {
+        "errorCode"      : "APP00900",
+        "errorMessage" : "Validation failed.", 
+        "userMessage"  : "Your data contain errors, please check details.",
+        "reference"       : "http://developer.leaseweb.com/errors/APP00900",
+        "errorDetails"    : [
+            {
+              "index": 2,
+              "messages": {
+                  "firstName"    : ["Name must be unique"],
+                  "country" : ["Country cannot be empty"]
+              }
+            },
+            {
+              "index": 4,
+              "messages": {
+                "firstName"    : ["Name cannot be empty", "Name must be unique"]
+              }
+            },
+            //...and so on...
+        ]
+    }
+    ```
+
+* In case data submitted consists in complex items of different type (eg: a domain with multiple nameservers), the error can look as shown below:
+    ##### Example response for multiple items of the different types
+    ```json
+    HTTP Status: 400 Bad Request
+    
+    {
+        "errorCode"    : "APP00900",
+        "errorMessage" : "Validation failed.", 
+        "userMessage"  : "Your data contain errors, please check details.",
+        "reference"    : "http://developer.leaseweb.com/errors/APP00900",
+        "errorDetails" : {
+            "domainName": ["Domain name must be unique"],
+            "nameservers": [
+                {
+                  "index": 2,
+                  "messages": {
+                      "hostname": ["Hostname cannot be empty"],
+                      "ipAddresses": [{
+                          "index": 1,
+                          "messages": [
+                              "Invalid IP address 172.217.21.1666aaa for a nameserver"
+                          ]
+                      }],
+                  }
+                }
+            ],
+            //...and so on...
+        }
+    }
+    ```
+
 
 ## Resources
  
