@@ -177,7 +177,7 @@ with explicit information about all errors.
               }
             },
             //...and so on...
-        }]
+        ]
     }
     ```
 
