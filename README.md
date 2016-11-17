@@ -198,12 +198,12 @@ with explicit information about all errors.
                   "index": 2,
                   "messages": {
                       "hostname": ["Hostname cannot be empty"],
-                      "ipAddresses": [
+                      "ipAddresses": [{
                           "index": 1,
                           "messages": [
                               "Invalid IP address 172.217.21.1666aaa for a nameserver"
                           ]
-                      ],
+                      }],
                   }
                 }
             ],
