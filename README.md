@@ -162,37 +162,51 @@ with explicit information about all errors.
         "errorMessage" : "Validation failed.", 
         "userMessage"  : "Your data contain errors, please check details.",
         "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-        "errorDetails"    : {
-            "2": {
-              "firstName"    : ["Name must be unique"],
-              "country" : ["Country cannot be empty"]
+        "errorDetails"    : [
+            {
+              "index": 2,
+              "messages": {
+                  "firstName"    : ["Name must be unique"],
+                  "country" : ["Country cannot be empty"]
+              }
             },
-            "5": {
-              "firstName"    : ["Name cannot be empty", "Name must be unique"]
+            {
+              "index": 4,
+              "messages": {
+                "firstName"    : ["Name cannot be empty", "Name must be unique"]
+              }
             },
             //...and so on...
-        }
+        }]
     }
     ```
 
-* In case data submitted consists in multiple items of different type (eg: user and domain), the error can look as shown below:
+* In case data submitted consists in complex items of different type (eg: a domain with multiple nameservers), the error can look as shown below:
     ##### Example response for multiple items of the different types
     ```json
     HTTP Status: 400 Bad Request
     
     {
-        "errorCode"      : "APP00900",
+        "errorCode"    : "APP00900",
         "errorMessage" : "Validation failed.", 
         "userMessage"  : "Your data contain errors, please check details.",
-        "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-        "errorDetails"    : {
-            "user": {
-              "firstName"    : ["Name must be unique"],
-              "country" : ["Country cannot be empty"]
-            },
-            "domain": {
-              "domainName"    : ["Name must be unique"]
-            },
+        "reference"    : "http://developer.leaseweb.com/errors/APP00900",
+        "errorDetails" : {
+            "domainName": ["Domain name must be unique"],
+            "nameservers": [
+                {
+                  "index": 2,
+                  "messages": {
+                      "hostname": ["Hostname cannot be empty"],
+                      "ipAddresses": [
+                          "index": 1,
+                          "messages": [
+                              "Invalid IP address 172.217.21.1666aaa for a nameserver"
+                          ]
+                      ],
+                  }
+                }
+            ],
             //...and so on...
         }
     }
