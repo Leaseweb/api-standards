@@ -14,7 +14,7 @@
   - [Use CRUD](#use-crud)
   - [Non-CRUD operations](#non-crud-operations)
   - [Leave complexity behind the query string](#leave-complexity-behind-the-query-string)
-  - [Responses that don't involve a resource](#responses-that-don-t-involve-a-resource)
+  - [Responses that don't involve a resource](#responses-that-dont-involve-a-resource)
 + [Pagination](#pagination)
   - [Use offset and limit](#use-offset-and-limit)
   - [Attach metadata](#attach-metadata)
@@ -124,10 +124,11 @@ Optionally add a link to a page for further explanation on the error.
 HTTP Status: 500 Internal Server Error
 
 {
-    "errorCode"    : "APP00800",
+    "errorCode" : "APP00800",
     "errorMessage" : "The connection with the DB cannot be established.",
-    "userMessage"  : "Cannot handle your request at the moment. Please try again later.",
-    "reference"    : "http://developer.leaseweb.com/errors/APP00800"
+    "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
+    "userMessage" : "Cannot handle your request at the moment. Please try again later.",
+    "reference" : "http://developer.leaseweb.com/errors/APP00800"
 }
 ```
 
@@ -140,12 +141,13 @@ with explicit information about all errors.
 HTTP Status: 400 Bad Request
 
 {
-    "errorCode"      : "APP00900",
+    "errorCode" : "APP00900",
     "errorMessage" : "Validation failed.", 
-    "userMessage"  : "Your data contain errors, please check details.",
-    "reference"       : "http://developer.leaseweb.com/errors/APP00900",
-    "errorDetails"    : {
-        "firstName"    : ["Name cannot be empty", "Name must be unique"],
+    "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
+    "userMessage" : "Your data contain errors, please check details.",
+    "reference" : "http://developer.leaseweb.com/errors/APP00900",
+    "errorDetails" : {
+        "firstName" : ["Name cannot be empty", "Name must be unique"],
         "country" : ["Country cannot be empty"]
     }
 }
@@ -191,7 +193,7 @@ you are not operating on a resource, therefore the best would be to use a verb a
 Make it clear in your API documentation that these *non-resource* scenarios are different.
 
 
-## Pagination and partial Responses
+## Pagination
 Pagination is an essential part of any API exposing a collection of results.
 Developers must always be aware that a response has more results than requested and 
 should have an easy way to request those additional resources.
