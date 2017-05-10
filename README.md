@@ -36,7 +36,7 @@ In case you need to defer from these standards or if conflicts are found, please
 ### Require TLS
 
 Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
-requests by not responding to requests for http or port 80 to avoid any insecure data 
+requests by not responding to requests for HTTP or port 80 to avoid any insecure data 
 exchange. Respond with a `403 Forbidden` if this is not possible for your environment.
 
 
@@ -47,14 +47,14 @@ useless since sensitive data will already have been exposed during the first cal
 ### Versioning
 
 APIs are subject to version control. Versioning your API is important as it helps developers 
-and existing clients to slowly transition from a version two another with enough time to plan 
+and existing clients to slowly transition from a version to another with enough time to plan 
 and adapt on changes.
 
 Keep your API version connected to interfaces changes rather than implementations. If you fix 
 a bug on version 1, is just easier to leave existing clients on version 1 rather than ask all of them 
 to switch to 1.1 because you fixed something.
 Should you change the interface, perhaps returning a completely different type in a response or 
-having different mandatory parameters, then is good time to inform developers that they need to 
+having different mandatory parameters, then is a good time to inform developers that they need to 
 switch soon or later to version 2.
 
 The version number of an API should appear in its URI as `/vN` with the major version (`N`) as prefix. 
@@ -66,7 +66,7 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 ### Trace requests with Correlation-Ids
 
 Each API response through the API Gateway will include a `APIGW-CORRELATION-ID` header 
-populated with a UUID value. Both the server and client can log these values, which will be helpful 
+populated with a UUID value. Both server and client can log these values, which will be helpful 
 for tracing and debugging requests.
 
 
@@ -144,7 +144,7 @@ HTTP Status: 400 Bad Request
     "errorCode" : "APP00900",
     "errorMessage" : "Validation failed.", 
     "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
-    "userMessage" : "Your data contain errors, please check details.",
+    "userMessage" : "Your data contains errors, please check details.",
     "reference" : "http://developer.leaseweb.com/errors/APP00900",
     "errorDetails" : {
         "firstName" : ["Name cannot be empty", "Name must be unique"],
@@ -161,7 +161,7 @@ Use the plural nounce for collection resource names. It makes it easy and predic
 between collections and singletons.
 
 ### Use CRUD
-Use the standard HTTP verbs `GET`,`POST`,`PUT` and `DELETE` to operate on collections or singeltons.
+Use the standard HTTP verbs `GET`,`POST`,`PUT` and `DELETE` to operate on collections or singletons.
 
 | Verb | Usage | Idempotent | |
 | ---  | ---   | ---        |	---	 |
@@ -247,7 +247,7 @@ This request will return a collection of domains containing only the resource id
 ### Filtering
 
 You can use a filtering expression to retrieve specific items. Add a `filter` field to querystring with the expression you need.
-We support the follwing expressions:
+We support the following expressions:
 
 #### Equals
 
