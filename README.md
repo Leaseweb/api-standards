@@ -14,7 +14,7 @@
   - [Use CRUD](#use-crud)
   - [Non-CRUD operations](#non-crud-operations)
   - [Leave complexity behind the query string](#leave-complexity-behind-the-query-string)
-  - [Responses that don't involve a resource](#responses-that-dont-involve-a-resource)
+  - [Responses that don't involve a resource](#responses-that-don-t-involve-a-resource)
 + [Pagination](#pagination)
   - [Use offset and limit](#use-offset-and-limit)
   - [Attach metadata](#attach-metadata)
@@ -23,6 +23,7 @@
   - [Subsets of Fields](#subsets-of-fields)
   - [Filtering](#filtering)
 + [Search](#search)
++ [Asynchronous Calls](#asynchronous-calls)
 
 This guide describes a set of API Design standards used at [LeaseWeb](https://www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
@@ -78,7 +79,6 @@ API call from start to end throughout our application landscape.
 When the API Gateway isnâ€™t receiving a `APIGW-CORRELATION-ID` it will add the header to the call.
 
 
-
 ## Requests and responses
 
 ### HTTP Status codes
@@ -87,15 +87,15 @@ Successful responses should be coded according to this guide:
 
 * `200 OK`: Request succeeded for a `GET` call, for `PUT` or `DELETE` call that completed synchronously
 * `201 Created`: Request succeeded for a `POST` call that completed synchronously
-* `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously
-* `204 No Content`: Request successfully processed a `DELETE` call, but is not returning any content
+* `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously 
+* `204 No Content`: Request successfully processed a `POST` or `DELETE` call, but is not returning any content
 
 Use the following HTTP status codes for errors:
 
 * `400 Bad Request`: Request failed because client submitted invalid data and needs to check his data before submitting again
 * `401 Unauthorized`: Request failed because user is not authenticated
-* `403 Forbidden`: Request failed because user does not have authorization to access the resource
-* `404 Not Found`: Request failed because the resource does not exists (e.g. for a `GET`, `PUT` or `DELETE` call)
+* `403 Forbidden`: Server understood the request, but refuses to fulfill it (might be due to the status of the resource, see the error message for specifics)
+* `404 Not Found`: Request failed because the resource does not exist or the resource doesn't belong to the user (e.g. for a `GET`, `PUT` or `DELETE` the specified resource doesn't exist)
 * `405 Method Not Allowed`: Request failed because the requested method is not allowed
 * `500 Internal Server Error`: Request failed on server side, user should check status site or report the issue (preferably we track 500 errors and get notified automatically)
 * `503 Service Unavailable`: API is unavailable, check status site for details
@@ -106,9 +106,9 @@ Use the following HTTP status codes for errors:
 Provide the full resource representation in the response. Always provide the full resource on `200` and `201` responses, except
 for `DELETE` requests.
 
-In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource
-representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has
-finished and the resource is created.
+In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource 
+representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous call has 
+finished and the resource is created. See the [Asynchronous Calls](#asynchronous-calls) for more information.
 
 *NOTE: see the examples for single resources and collections. In a single resource there is no need for a root-identifier.*
 
@@ -293,3 +293,85 @@ When the search scope is narrower and on a specific resource, you can use the â€
 This will list all dnsRecords within the domain resource identified by `leaseweb.com` that contains the text `amsterdam`.
 
 *Note: search is not filtering*
+
+## Asynchronous calls
+Sometimes a request cannot return the full resource result immediately. To handle this type of requests you can use a job queue or other sort of job management internally and use API requests to manage it.
+Jobs should be a normal resource in your API, but without the normal CRUD operations. Check the [Resources](#resources) for more information about listing job collections or singletons.
+
+### Create a job
+Your method behaves as a normal `POST`/`PUT`/`DELETE` endpoint, but the response is a `202 Accepted`. The header `Location` has a URL to get the information of the job. In the response body the information of the job is provided.
+
+#### Example Response
+```json
+HTTP/1.1 202 Accepted
+Location: https://api.leaseweb.com/v1/jobs/237daad0-2aed-4260-b0e4-488d9cd55607
+Retry-After: 30
+
+{
+  "id": "237daad0-2aed-4260-b0e4-488d9cd55607",
+  "name": "virtualServer.provision",
+  "status": "PENDING",
+  "createdAt": "2016-12-31T01:02:03+00:00",
+  "eta": "2016-12-31T01:02:03+00:00"
+}
+```
+
+### Status of a job
+To retrieve the current status of a job use a `GET` request to the jobs endpoint together with the ID of the job. The response body contains information about the job, which must include the ID, the name that describes the job, the current status and the dates when the job was created and started in ISO-8601 format. Optional the response can also contain an estimated end date for the job in ISO-8601 format. Also optional is including the header `Retry-after` that contains an estimated time in seconds to retry the request for the job status.
+
+#### Example Response
+```json
+HTTP/1.1 200 OK
+Retry-After: 30
+
+{
+  "id": "237daad0-2aed-4260-b0e4-488d9cd55607",
+  "name": "virtualServer.provision",
+  "status": "STARTED",
+  "createdAt": "2016-12-31T01:02:03+00:00",
+  "startedAt": "2016-12-31T01:02:04+00:00",
+  "eta": "2016-12-31T01:02:03+00:00"
+}
+```
+
+### Completed job
+When the job is completed the response is a `303 See Other` together with a `Location` header with the URL to get the information of the resulting resource. The response body contains all the information about the job and the date when job was completed in ISO-8601 format.
+
+#### Example Response
+```json
+HTTP/1.1 303 See Other
+Location: https://api.leaseweb.com/v1/virtualServers/52f606e0-61d3-4355-a191-56f5ab8b26f8
+
+{
+  "id": "237daad0-2aed-4260-b0e4-488d9cd55607",
+  "name": "virtualServer.provision",
+  "status": "COMPLETED",
+  "createdAt": "2016-12-31T01:02:03+00:00",
+  "startedAt": "2016-12-31T01:03:05+00:00",
+  "completedAt": "2016-12-31T01:04:25+00:00"
+}
+```
+
+If the job doesn't refer to a resource the response is a `200 OK` without the `Location` header, and the response body contains the all information about the job.
+
+### Cancel a job
+To cancel an uncompleted job you can use a `DELETE` request to the job endpoint together with the ID of the job.
+
+If a job was successfully canceled the response is a `200 OK` with a response body containing the information about the job.
+
+#### Example Response
+```json
+HTTP/1.1 200 OK
+
+{
+  "id": "237daad0-2aed-4260-b0e4-488d9cd55607",
+  "name": "virtualServer.provision",
+  "status": "CANCELED",
+  "createdAt": "2016-12-31T01:02:03+00:00"
+}
+```
+
+Sometimes the job might be in a state that it cannot be canceled. In this case the response is a `403 Forbidden`.
+
+### Purged jobs
+Purging can be done automatically using internal methods or not done at all. A request to an already purged job will return a `404 Not Found` response.
