@@ -24,40 +24,41 @@
   - [Filtering](#filtering)
 + [Search](#search)
 
-This guide describes a set of API Design standards used at [LeaseWeb](www.leaseweb.com).
+This guide describes a set of API Design standards used at [LeaseWeb](https://www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
 and resource models described below.
 
 In case you need to defer from these standards or if conflicts are found, please contact the Developer Platform.
 
 
-##Foundation
+
+## Foundation
 
 ### Require TLS
 
-Require TLS to access the API, without exception. Ideally, simply reject any non-TLS 
-requests by not responding to requests for HTTP or port 80 to avoid any insecure data 
+Require TLS to access the API, without exception. Ideally, simply reject any non-TLS
+requests by not responding to requests for HTTP or port 80 to avoid any insecure data
 exchange. Respond with a `403 Forbidden` if this is not possible for your environment.
 
 
-Redirects are discouraged since they allow sloppy/bad client behavior without providing 
-any clear gain. Clients that rely on redirects double up on server traffic and render TLS 
+Redirects are discouraged since they allow sloppy/bad client behavior without providing
+any clear gain. Clients that rely on redirects double up on server traffic and render TLS
 useless since sensitive data will already have been exposed during the first call.
 
 ### Versioning
 
-APIs are subject to version control. Versioning your API is important as it helps developers 
-and existing clients to slowly transition from a version to another with enough time to plan 
+APIs are subject to version control. Versioning your API is important as it helps developers
+and existing clients to slowly transition from a version to another with enough time to plan
 and adapt on changes.
 
-Keep your API version connected to interfaces changes rather than implementations. If you fix 
-a bug on version 1, is just easier to leave existing clients on version 1 rather than ask all of them 
+Keep your API version connected to interfaces changes rather than implementations. If you fix
+a bug on version 1, is just easier to leave existing clients on version 1 rather than ask all of them
 to switch to 1.1 because you fixed something.
-Should you change the interface, perhaps returning a completely different type in a response or 
-having different mandatory parameters, then is a good time to inform developers that they need to 
+Should you change the interface, perhaps returning a completely different type in a response or
+having different mandatory parameters, then is a good time to inform developers that they need to
 switch soon or later to version 2.
 
-The version number of an API should appear in its URI as `/vN` with the major version (`N`) as prefix. 
+The version number of an API should appear in its URI as `/vN` with the major version (`N`) as prefix.
 
 #### Example
 
@@ -65,17 +66,17 @@ The version number of an API should appear in its URI as `/vN` with the major ve
 
 ### Trace requests with Correlation-Ids
 
-Each API response through the API Gateway will include a `APIGW-CORRELATION-ID` header 
-populated with a UUID value. Both server and client can log these values, which will be helpful 
+Each API response through the API Gateway will include a `APIGW-CORRELATION-ID` header
+populated with a UUID value. Both server and client can log these values, which will be helpful
 for tracing and debugging requests.
 
 
-If you make subsequent calls to other APIs due to an API request, it is advised to add the 
-`APIGW-CORRELATION-ID` header to your subsequent call. This way it is possible to trace an 
+If you make subsequent calls to other APIs due to an API request, it is advised to add the
+`APIGW-CORRELATION-ID` header to your subsequent call. This way it is possible to trace an
 API call from start to end throughout our application landscape.
 
 When the API Gateway isn’t receiving a `APIGW-CORRELATION-ID` it will add the header to the call.
- 
+
 
 
 ## Requests and responses
@@ -86,12 +87,12 @@ Successful responses should be coded according to this guide:
 
 * `200 OK`: Request succeeded for a `GET` call, for `PUT` or `DELETE` call that completed synchronously
 * `201 Created`: Request succeeded for a `POST` call that completed synchronously
-* `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously 
-* `204 No Content`: Request successfully processed a `DELETE` call, but is not returning any content 
+* `202 Accepted`: Request accepted for a `POST`, `PUT` or `DELETE` call that will be processed asynchronously
+* `204 No Content`: Request successfully processed a `DELETE` call, but is not returning any content
 
 Use the following HTTP status codes for errors:
 
-* `400 Bad Request`: Request failed because client submitted invalid data and needs to check his data before submitting again 
+* `400 Bad Request`: Request failed because client submitted invalid data and needs to check his data before submitting again
 * `401 Unauthorized`: Request failed because user is not authenticated
 * `403 Forbidden`: Request failed because user does not have authorization to access the resource
 * `404 Not Found`: Request failed because the resource does not exists (e.g. for a `GET`, `PUT` or `DELETE` call)
@@ -102,19 +103,19 @@ Use the following HTTP status codes for errors:
 
 ### Provide full resources
 
-Provide the full resource representation in the response. Always provide the full resource on `200` and `201` responses, except 
+Provide the full resource representation in the response. Always provide the full resource on `200` and `201` responses, except
 for `DELETE` requests.
 
-In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource 
-representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has 
+In case of asynchronous calls (`POST/PUT/DELETE`) you should use `202 Accepted`. `202` Responses will not include the full resource
+representation. You can provide a task ID which can be queried, or create a temporary resource until the asynchronous calls has
 finished and the resource is created.
 
 *NOTE: see the examples for single resources and collections. In a single resource there is no need for a root-identifier.*
 
 
 ### Error messages
-Always provide an error code in your responses, so that applications can always understand what is specifically wrong. 
-Additionally, provide 2 different error messages: one very technical for developers and one that may be directly shown to an 
+Always provide an error code in your responses, so that applications can always understand what is specifically wrong.
+Additionally, provide 2 different error messages: one very technical for developers and one that may be directly shown to an
 end user. Developers will like this approach since it requires less code handling for them.
 
 Optionally add a link to a page for further explanation on the error.
@@ -133,7 +134,7 @@ HTTP Status: 500 Internal Server Error
 ```
 
 ### Form validation
-You may need to return several error messages when dealing with form data. In this case use additional response field “errorDetails” 
+You may need to return several error messages when dealing with form data. In this case use additional response field “errorDetails”
 with explicit information about all errors.
 
 #### Example Response
@@ -142,7 +143,7 @@ HTTP Status: 400 Bad Request
 
 {
     "errorCode" : "APP00900",
-    "errorMessage" : "Validation failed.", 
+    "errorMessage" : "Validation failed.",
     "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
     "userMessage" : "Your data contains errors, please check details.",
     "reference" : "http://developer.leaseweb.com/errors/APP00900",
@@ -152,12 +153,12 @@ HTTP Status: 400 Bad Request
     }
 }
 ```
- 
+
 
 ## Resources
- 
+
 ### Plural nouns
-Use the plural nounce for collection resource names. It makes it easy and predictable for developers writing an API using consistent names and distinguishes 
+Use the plural nounce for collection resource names. It makes it easy and predictable for developers writing an API using consistent names and distinguishes
 between collections and singletons.
 
 ### Use CRUD
@@ -195,16 +196,16 @@ Make it clear in your API documentation that these *non-resource* scenarios are 
 
 ## Pagination
 Pagination is an essential part of any API exposing a collection of results.
-Developers must always be aware that a response has more results than requested and 
+Developers must always be aware that a response has more results than requested and
 should have an easy way to request those additional resources.
 
-Moreover, simple calls that require only partial data, like for instance just a property of an 
-object instead of the whole attributes list, must be accommodated easily. For this reason, 
-clients may just pass a list of the fields they really require, keeping your API results concise 
+Moreover, simple calls that require only partial data, like for instance just a property of an
+object instead of the whole attributes list, must be accommodated easily. For this reason,
+clients may just pass a list of the fields they really require, keeping your API results concise
 and fast.
 
 ### Use `offset` and `limit`
-Use `offset` and `limit` to request a range for a response. It is very common and not misleading. 
+Use `offset` and `limit` to request a range for a response. It is very common and not misleading.
 
 #### Example Request
 `GET /v1/domains?limit=25&offset=50`
@@ -212,12 +213,12 @@ Use `offset` and `limit` to request a range for a response. It is very common an
 This request will return a collection of 25 domains starting from the 50th.
 
 ### Attach metadata
-Always inform the developer that the response is paginated with a metadata attribute in your response, 
+Always inform the developer that the response is paginated with a metadata attribute in your response,
 specifying the total number of items in the collection, the limit and the offset.
 
 #### Example Response
 ```json
-{ 
+{
 	"domains": [
 		{ "id": "leaseweb.com" },
 		{ "id": "leaseweb.net" }
@@ -231,7 +232,7 @@ specifying the total number of items in the collection, the limit and the offset
 ```
 
 ### Use defaults
-By rule of thumb, you may define a default limit of 25 and offset of 0. Of course, if your application serves large amount of data per request, 
+By rule of thumb, you may define a default limit of 25 and offset of 0. Of course, if your application serves large amount of data per request,
 you may reduce the default limit and vice versa.
 
 ## Partial Responses and Filters
@@ -255,7 +256,7 @@ The following request will return a collection of domains where the domainName e
 
 `GET /v1/domains?filter={ "domainName" : "leaseweb.com" }`
 
-or 
+or
 
 `GET /v1/domains?filter={ "domainName" : { "$eq" : "leaseweb.com" } }`
 
@@ -282,7 +283,7 @@ It is possible to combine expressions to get items. The following request will r
 You can also use `$or` (either of the conditions)  and `$nor` (neither of the conditions)  operators.
 
 ## Search
- 
+
 ### Scoped Search
 When the search scope is narrower and on a specific resource, you can use the “q” parameter to provide the search query.
 
@@ -292,5 +293,3 @@ When the search scope is narrower and on a specific resource, you can use the �
 This will list all dnsRecords within the domain resource identified by `leaseweb.com` that contains the text `amsterdam`.
 
 *Note: search is not filtering*
-
-
