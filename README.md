@@ -100,6 +100,8 @@ Use the following HTTP status codes for errors:
 * `500 Internal Server Error`: Request failed on server side, user should check status site or report the issue (preferably we track 500 errors and get notified automatically)
 * `503 Service Unavailable`: API is unavailable, check status site for details
 
+A full reference can be found here: https://http.cat/
+
 
 ### Provide full resources
 
@@ -118,7 +120,8 @@ Always provide an error code in your responses, so that applications can always 
 Additionally, provide 2 different error messages: one very technical for developers and one that may be directly shown to an
 end user. Developers will like this approach since it requires less code handling for them.
 
-Optionally add a link to a page for further explanation on the error.
+Optionally add a link to a page for further explanation on the error. The addition of a `visualReference` for our non 
+English-speaking clients is mandatory.
 
 #### Example Response
 ```json
@@ -129,7 +132,8 @@ HTTP Status: 500 Internal Server Error
     "errorMessage" : "The connection with the DB cannot be established.",
     "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
     "userMessage" : "Cannot handle your request at the moment. Please try again later.",
-    "reference" : "http://developer.leaseweb.com/errors/APP00800"
+    "reference" : "http://developer.leaseweb.com/errors/APP00800",
+    "visualReference": "https://http.cat/500"
 }
 ```
 
@@ -147,6 +151,7 @@ HTTP Status: 400 Bad Request
     "correlationId" : "550e8400-e29b-41d4-a716-446655440000",
     "userMessage" : "Your data contains errors, please check details.",
     "reference" : "http://developer.leaseweb.com/errors/APP00900",
+    "visualReference": "https://http.cat/400",
     "errorDetails" : {
         "firstName" : ["Name cannot be empty", "Name must be unique"],
         "country" : ["Country cannot be empty"]
