@@ -24,6 +24,11 @@
   - [Filtering](#filtering)
 + [Search](#search)
 + [Asynchronous Calls](#asynchronous-calls)
++ [Unit Measurement](#unit-measurement)
+  - [Memory](#memory)
+  - [Storage](#storage)
+  - [Data traffic](#data-traffic)
+  - [Bandwidth](#bandwidth)
 
 This guide describes a set of API Design standards used at [LeaseWeb](https://www.leaseweb.com).
 When designing a new API, it's important to respect the HTTP interaction patterns
@@ -375,3 +380,20 @@ Sometimes the job might be in a state that it cannot be canceled. In this case t
 
 ### Purged jobs
 Purging can be done automatically using internal methods or not done at all. A request to an already purged job will return a `404 Not Found` response.
+
+## Unit Measurement
+For displaying sizes and usage we use the following standard:
+
+#### Memory
+We use faktor 2. This means that 1GB memory == 1024 MB of memory == 1.073.741.824 bytes.
+
+#### Storage
+We use base 10 (GB). A lot of storage is provisioned in GiB. 
+Which means that 1GB of storage == 0,93132 GiB of storage == 1.000.000 bytes.
+
+#### Data traffic
+We use base 10 (GB). 1GB = 1.000.0000 bytes.
+
+#### Bandwidth
+We use bps. 1Mbps == 1000Kbps == 1.000.000 bps. 
+*NOTE: often bandwidth is measured in bytes/second, which means you need to multiply by 8.*
