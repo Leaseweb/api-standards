@@ -19,6 +19,9 @@
   - [Use offset and limit](#use-offset-and-limit)
   - [Attach metadata](#attach-metadata)
   - [Use defaults](#use-defaults)
++ [Metrics](#metrics)
+  - [Granularity](#granularity)
+  - [Aggregation](#aggregation)
 + [Partial Responses and Filters](#partial-responses-and-filters)
   - [Subsets of Fields](#subsets-of-fields)
   - [Filtering](#filtering)
@@ -234,6 +237,30 @@ specifying the total number of items in the collection, the limit and the offset
 ### Use defaults
 By rule of thumb, you may define a default limit of 25 and offset of 0. Of course, if your application serves large amount of data per request,
 you may reduce the default limit and vice versa.
+
+## Metrics
+API design for metrics/usage across all products.
+
+### Granularity
+Data granularity is a measure of the level of detail in a data structure. In time-series data, for example, the granularity of measurement might be based on intervals of years, months, weeks, days, or hours. Leaseweb API supports:
+
+- `5MIN`
+- `HOUR`
+- `DAY`
+- `WEEK` (Calendar week, starting on Monday according to ISO8601)
+- `MONTH`
+- `YEAR`
+
+
+### Aggregation
+Aggregation means: instead of getting metrics or usage for a single entity, we should be able to give combined metrics for multiple entities (for example 20 at once). Leaseweb API supports:
+
+- `SUM`
+- `AVG`
+
+#### Example Request
+`GET /v1/instances/granularity=DAY&aggregation=SUM`
+
 
 ## Partial Responses and Filters
 
