@@ -10,6 +10,7 @@
   - [Error messages](#error-messages)
   - [Form validation](#form-validation)
 + [Resources](#resources)
+  - [Naming convention](#naming-convention) 
   - [Plural nouns](#plural-nouns)
   - [Use CRUD](#use-crud)
   - [Non-CRUD operations](#non-crud-operations)
@@ -156,6 +157,17 @@ HTTP Status: 400 Bad Request
 
 
 ## Resources
+
+### Naming convention
+Use the `camelCase` convention for naming parameters, endpoints and query string keys. for example:
+
+| Incorrect | Correct |
+| ---  | --- |
+| `/v1/bareMetal-servers` | `/v1/bareMetalServers` |
+| `/v1/public_cloud` | `/v1/publicCloud` |
+| `/v1/networkequipments` | `/v1/networkEquipments` |
+| `/v1/bareMetalServers?sort-by=location` | `/v1/bareMetalServers?sortBy=location` |
+
 
 ### Plural nouns
 Use the plural nounce for collection resource names. It makes it easy and predictable for developers writing an API using consistent names and distinguishes
